@@ -1,3 +1,3 @@
-import TasksFilter from "./tasksFilter";
+import TasksFilter from "./tasksFilter.jsx";
 
 export default TasksFilter;
