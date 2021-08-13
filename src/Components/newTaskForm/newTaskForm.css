@@ -1,3 +1,7 @@
+form {
+	margin: 0;
+}
+
 .header h1 {
   position: absolute;
   top: -140px;

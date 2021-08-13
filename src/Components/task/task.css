@@ -68,6 +68,10 @@
   display: none;
 }
 
+.hidden {
+	display: none;
+}
+
 @media screen and (-webkit-min-device-pixel-ratio: 0) {
   .todo-list li .toggle {
     background: none;

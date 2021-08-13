@@ -1,44 +1,34 @@
-import React, { Component } from "react";
+import React from "react";
 import "./task.css";
 
-export default class Task extends Component {
-  state = {
-    done: false,
-  };
+const Task = ({ label, onDeleted, onToggleDone, done, hidden }) => {
+  let className = "";
 
-  doneTask = () => {
-    this.setState(({ done }) => {
-      return {
-        done: !done,
-      };
-    });
-  };
+  if (done) {
+    className += " completed";
+	}
 
-  render() {
-    const { label, onDeleted } = this.props;
-    const { done } = this.state;
-    let className = "";
-
-    if (done) {
-      className = "completed";
-    }
-
-    return (
-      <li className={className}>
-        <div className="view">
-          <input className="toggle" type="checkbox" />
-          <label>
-            <span className="description" onClick={this.doneTask}>
-              {label}
-            </span>
-          </label>
-          <button className="icon icon-edit"></button>
-          <button onClick={onDeleted} className="icon icon-destroy"></button>
-        </div>
-        {className === "editing" && (
-          <input type="text" className="edit" value="Editing task" />
-        )}
-      </li>
-    );
+  if (hidden) {
+    className += " hidden";
   }
-}
+
+  return (
+    <li className={className}>
+      <div className="view">
+        <input className="toggle" type="checkbox" />
+        <label>
+          <span className="description" onClick={onToggleDone}>
+            {label}
+          </span>
+        </label>
+        <button className="icon icon-edit"></button>
+        <button onClick={onDeleted} className="icon icon-destroy"></button>
+      </div>
+      {className.includes("editing") && (
+        <input type="text" className="edit" value="Editing task" />
+      )}
+    </li>
+  );
+};
+
+export default Task;
