@@ -3,7 +3,7 @@ import Footer from "../footer";
 import TaskList from "../taskList";
 import NewTaskForm from "../newTaskForm";
 import "./todo.css";
-// import id from "date-fns/esm/locale/id/index.js";
+
 
 export default class Todo extends Component {
   maxId = 1;
@@ -34,7 +34,9 @@ export default class Todo extends Component {
       label,
       done: false,
       hidden: false,
+      modified: false,
       id: this.maxId++,
+      date: new Date(),
     };
   }
 
@@ -61,14 +63,10 @@ export default class Todo extends Component {
     this.setState(({ filtersData }) => {
       const newFiltersData = filtersData.map((el) => {
         if (el.label !== label) {
-          const newElement = { ...el, hasClass: false };
-
-          return newElement;
+          return { ...el, hasClass: false };
         }
 
-        const newElement = { ...el, hasClass: true };
-
-        return newElement;
+        return { ...el, hasClass: true };
       });
 
       return {
@@ -104,9 +102,23 @@ export default class Todo extends Component {
     this.setState(({ todoData }) => {
       const newArr = todoData.map((el) => {
         if (el.id === id) {
-          const newElement = { ...el, done: !el.done };
+          return { ...el, done: !el.done };
+        }
 
-          return newElement;
+        return el;
+      });
+
+      return {
+        todoData: newArr,
+      };
+    });
+  };
+
+  onToggleModified = (id) => {
+    this.setState(({ todoData }) => {
+      const newArr = todoData.map((el) => {
+        if (el.id === id) {
+          return { ...el, modified: !el.modified };
         }
 
         return el;
@@ -142,12 +154,14 @@ export default class Todo extends Component {
         <section className="main">
           <TaskList
             tasks={todoDataForRender}
+            modified={this.modified}
             onDeleted={this.deleteTask}
             onToggleDone={this.onToggleDone}
+            onToggleModified={this.onToggleModified}
           />
           <Footer
-            filters={filtersData}
             toDo={todoCount}
+            filters={filtersData}
             selecteFilter={this.onSelected}
             clearCompleted={this.deleteDoneTasks}
           />

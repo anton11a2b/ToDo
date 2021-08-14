@@ -1,9 +1,10 @@
 import React from "react";
+import PropTypes from "prop-types";
 import TasksFilter from "../tasksFilter";
 import "./footer.css";
 
 const Footer = ({ filters, toDo, selecteFilter, clearCompleted }) => {
-  const elements = filters.map(({ label, hasClass}) => {
+  const elements = filters.map(({ label, hasClass }) => {
     return (
       <li key={label}>
         <TasksFilter
@@ -23,6 +24,20 @@ const Footer = ({ filters, toDo, selecteFilter, clearCompleted }) => {
       </button>
     </footer>
   );
+};
+
+Footer.defaultProps = {
+  selecteFilter: () => {},
+  clearCompleted: () => {},
+  filters: [],
+  toDo: 0,
+};
+
+Footer.propTypes = {
+  selecteFilter: PropTypes.func,
+  clearCompleted: PropTypes.func,
+  filters: PropTypes.arrayOf(PropTypes.any),
+  toDo: PropTypes.number,
 };
 
 export default Footer;
