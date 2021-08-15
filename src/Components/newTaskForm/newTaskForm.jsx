@@ -1,27 +1,32 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import "./newTaskForm.css";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './newTaskForm.css';
 
 export default class NewTaskForm extends Component {
   state = {
-    label: "",
+    label: '',
   };
 
-  onLabelChange = (e) => {
+  onLabelChange = (event) => {
     this.setState({
-      label: e.target.value,
+      label: event.target.value,
     });
   };
 
-  onSubmit = (e) => {
-    e.preventDefault();
-		this.props.onTaskAdded(this.state.label);
-		this.setState({
-			label: "",
-		})
+  onSubmit = (event) => {
+    const { onTaskAdded } = this.props;
+    const { label } = this.state;
+
+    event.preventDefault();
+    onTaskAdded(label);
+    this.setState({
+      label: '',
+    });
   };
 
   render() {
+    const { label } = this.state;
+
     return (
       <header className="header">
         <h1>todos</h1>
@@ -30,7 +35,7 @@ export default class NewTaskForm extends Component {
             autoFocus
             type="text"
             className="new-todo"
-            value={this.state.label}
+            value={label}
             onChange={this.onLabelChange}
             placeholder="What needs to be done?"
           />
@@ -41,7 +46,7 @@ export default class NewTaskForm extends Component {
 }
 
 NewTaskForm.defaultProps = {
-  onTaskAdded: () => {}
+  onTaskAdded: () => {},
 };
 
 NewTaskForm.propTypes = {

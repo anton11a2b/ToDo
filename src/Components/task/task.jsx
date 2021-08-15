@@ -1,21 +1,28 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { formatDistanceToNow } from "date-fns";
-import "./task.css";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { formatDistanceToNow } from 'date-fns';
+import './task.css';
 
 export default class Task extends Component {
-  state = {
-    time: formatDistanceToNow(this.props.date, {
-      addSuffix: true,
-      includeSeconds: true,
-    }),
-    label: this.props.label,
-  };
+  constructor(props) {
+    super(props);
+
+    const { date, label } = this.props;
+    this.state = {
+      time: formatDistanceToNow(date, {
+        addSuffix: true,
+        includeSeconds: true,
+      }),
+      label,
+    };
+  }
 
   componentDidMount() {
     this.timer = setInterval(() => {
+      const { date } = this.props;
+
       this.setState({
-        time: formatDistanceToNow(this.props.date, {
+        time: formatDistanceToNow(date, {
           addSuffix: true,
           includeSeconds: true,
         }),
@@ -27,69 +34,51 @@ export default class Task extends Component {
     clearInterval(this.timer);
   }
 
-  onLabelChange = (e) => {
+  onLabelChange = (event) => {
     this.setState({
-      label: e.target.value,
+      label: event.target.value,
     });
   };
 
-  onSubmit = (e) => {
-    e.preventDefault();
-    this.props.onToggleModified();
+  onSubmit = (event) => {
+    const { onToggleModified } = this.props;
+
+    event.preventDefault();
+    onToggleModified();
   };
 
   render() {
-    const {
-      done,
-      hidden,
-      modified,
-      onDeleted,
-      onToggleDone,
-      onToggleModified,
-    } = this.props;
+    const { done, hidden, modified, onDeleted, onToggleDone, onToggleModified } = this.props;
+    const { time, label } = this.state;
 
-    let className = "";
+    let className = '';
 
     if (done) {
-      className += " completed";
+      className += ' completed';
     }
 
     if (hidden) {
-      className += " hidden";
+      className += ' hidden';
     }
 
     if (modified) {
-      className += " editing";
+      className += ' editing';
     }
 
     return (
       <li className={className}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            checked={done}
-            onChange={onToggleDone}
-          />
+          <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
           <label>
-            <span className="description">{this.state.label}</span>
-            <span className="created">{this.state.time}</span>
+            <span className="description">{label}</span>
+            <span className="created">{time}</span>
           </label>
-          <button
-            onClick={onToggleModified}
-            className="icon icon-edit"
-          ></button>
-          <button onClick={onDeleted} className="icon icon-destroy"></button>
+          <button type="button" onClick={onToggleModified} className="icon icon-edit" />
+          <button type="button" onClick={onDeleted} className="icon icon-destroy" />
         </div>
-        {className.includes("editing") && (
+        {className.includes('editing') && (
           <form onSubmit={this.onSubmit}>
-            <input
-              onChange={this.onLabelChange}
-              type="text"
-              className="edit"
-              value={this.state.label}
-              autoFocus
-            />
+            <input onChange={this.onLabelChange} type="text" className="edit" value={label} autoFocus />
           </form>
         )}
       </li>
@@ -98,7 +87,7 @@ export default class Task extends Component {
 }
 
 Task.defaultProps = {
-  label: "",
+  label: '',
   done: false,
   hidden: false,
   modified: false,

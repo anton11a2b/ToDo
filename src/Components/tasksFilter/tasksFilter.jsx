@@ -1,23 +1,23 @@
-import React from "react";
-import PropTypes from "prop-types";
-import "./tasksFilter.css";
+import React from 'react';
+import PropTypes from 'prop-types';
+import './tasksFilter.css';
 
 const TasksFilter = ({ label, hasClass, selecteFilter }) => {
-  let className = "";
+  let className = '';
 
   if (hasClass) {
-    className = "selected";
+    className = 'selected';
   }
 
   return (
-    <button className={className} onClick={selecteFilter}>
+    <button type="button" className={className} onClick={selecteFilter}>
       {label}
     </button>
   );
 };
 
 TasksFilter.defaultProps = {
-  label: "",
+  label: '',
   hasClass: false,
   selecteFilter: () => {},
 };

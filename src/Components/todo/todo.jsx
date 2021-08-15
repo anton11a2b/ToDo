@@ -1,63 +1,31 @@
-import React, { Component } from "react";
-import Footer from "../footer";
-import TaskList from "../taskList";
-import NewTaskForm from "../newTaskForm";
-import "./todo.css";
-
+import React, { Component } from 'react';
+import Footer from '../footer/footer';
+import TaskList from '../taskList/taskList';
+import NewTaskForm from '../newTaskForm/newTaskForm';
+import './todo.css';
 
 export default class Todo extends Component {
   maxId = 1;
 
   state = {
-    todoData: [
-      this.createTask("Completed task"),
-      this.createTask("Editing task"),
-      this.createTask("Active task"),
-    ],
+    todoData: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
     filtersData: [
-      this.createFilter("All", true),
-      this.createFilter("Active", false),
-      this.createFilter("Completed", false),
+      this.createFilter('All', true),
+      this.createFilter('Active', false),
+      this.createFilter('Completed', false),
     ],
-    activeFilter: "All",
+    activeFilter: 'All',
   };
 
-  createFilter(label, hasClass) {
-    return {
-      label,
-      hasClass,
-    };
-  }
+  deleteDoneTasks = () => {
+    this.setState(({ todoData }) => {
+      const newArr = todoData.filter((el) => !el.done);
 
-  createTask(label) {
-    return {
-      label,
-      done: false,
-      hidden: false,
-      modified: false,
-      id: this.maxId++,
-      date: new Date(),
-    };
-  }
-
-  checkActiveFilter(activeFilter, el) {
-    switch (activeFilter) {
-      case "Active":
-        if (el.done) {
-          return { ...el, hidden: true };
-        }
-
-        return { ...el, hidden: false };
-      case "Completed":
-        if (!el.done) {
-          return { ...el, hidden: true };
-        }
-
-        return { ...el, hidden: false };
-      default:
-        return null;
-    }
-  }
+      return {
+        todoData: newArr,
+      };
+    });
+  };
 
   onSelected = (label) => {
     this.setState(({ filtersData }) => {
@@ -130,23 +98,48 @@ export default class Todo extends Component {
     });
   };
 
-  deleteDoneTasks = () => {
-    this.setState(({ todoData }) => {
-      const newArr = todoData.filter((el) => !el.done);
+  createFilter(label, hasClass) {
+    return {
+      label,
+      hasClass,
+    };
+  }
 
-      return {
-        todoData: newArr,
-      };
-    });
-  };
+  createTask(label) {
+    return {
+      label,
+      done: false,
+      hidden: false,
+      modified: false,
+      id: this.maxId++,
+      date: new Date(),
+    };
+  }
+
+  checkActiveFilter(activeFilter, el) {
+    switch (activeFilter) {
+      case 'Active':
+        if (el.done) {
+          return { ...el, hidden: true };
+        }
+
+        return { ...el, hidden: false };
+      case 'Completed':
+        if (!el.done) {
+          return { ...el, hidden: true };
+        }
+
+        return { ...el, hidden: false };
+      default:
+        return null;
+    }
+  }
 
   render() {
     const { todoData, filtersData, activeFilter } = this.state;
     const todoCount = todoData.filter((el) => !el.done).length;
     const todoDataForRender =
-      activeFilter === "All"
-        ? todoData
-        : todoData.map((el) => this.checkActiveFilter(activeFilter, el));
+      activeFilter === 'All' ? todoData : todoData.map((el) => this.checkActiveFilter(activeFilter, el));
 
     return (
       <section className="todoapp">
