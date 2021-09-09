@@ -8,13 +8,19 @@ export default class Todo extends Component {
   maxId = 1;
 
   state = {
-    todoData: [this.createTask('Completed task'), this.createTask('Editing task'), this.createTask('Active task')],
+    todoData: [
+      this.createTask('Completed task', '12', '30'),
+      this.createTask('Editing task', '12', '30'),
+      this.createTask('Active task', '12', '30'),
+    ],
     filtersData: [
       this.createFilter('All', true),
       this.createFilter('Active', false),
       this.createFilter('Completed', false),
     ],
     activeFilter: 'All',
+    minutes: '',
+    seconds: '',
   };
 
   deleteDoneTasks = () => {
@@ -55,15 +61,29 @@ export default class Todo extends Component {
   };
 
   addTask = (label) => {
-    const newTask = this.createTask(label);
+    let { minutes, seconds } = this.state;
 
-    this.setState(({ todoData }) => {
-      const newArray = [...todoData, newTask];
+    if (Number(minutes) < 10) {
+      minutes = `0${Number(minutes)}`;
+    }
 
-      return {
-        todoData: newArray,
-      };
-    });
+    if (seconds < 10) {
+      seconds = `0${Number(seconds)}`;
+    }
+
+    if (label) {
+      const newTask = this.createTask(label, minutes, seconds);
+
+      this.setState(({ todoData }) => {
+        const newArray = [...todoData, newTask];
+
+        return {
+          todoData: newArray,
+          minutes: '',
+          seconds: '',
+        };
+      });
+    }
   };
 
   onToggleDone = (id) => {
@@ -98,21 +118,44 @@ export default class Todo extends Component {
     });
   };
 
-  createFilter(label, hasClass) {
-    return {
-      label,
-      hasClass,
-    };
-  }
+  onMinChange = (event) => {
+    let min = event.target.value;
 
-  createTask(label) {
+    if (Number(min) > 59) {
+      min = '59';
+    }
+
+    this.setState({ minutes: min });
+  };
+
+  onSecChange = (event) => {
+    let sec = event.target.value;
+
+    if (Number(sec) > 59) {
+      sec = '59';
+    }
+
+    this.setState({ seconds: sec });
+  };
+
+  createTask(label, min, sec) {
     return {
+      sec,
+      min,
       label,
       done: false,
       hidden: false,
       modified: false,
+      isStarted: false,
       id: this.maxId++,
       date: new Date(),
+    };
+  }
+
+  createFilter(label, hasClass) {
+    return {
+      label,
+      hasClass,
     };
   }
 
@@ -136,14 +179,20 @@ export default class Todo extends Component {
   }
 
   render() {
-    const { todoData, filtersData, activeFilter } = this.state;
+    const { todoData, filtersData, activeFilter, minutes, seconds } = this.state;
     const todoCount = todoData.filter((el) => !el.done).length;
     const todoDataForRender =
       activeFilter === 'All' ? todoData : todoData.map((el) => this.checkActiveFilter(activeFilter, el));
 
     return (
       <section className="todoapp">
-        <NewTaskForm onTaskAdded={this.addTask} />
+        <NewTaskForm
+          minutes={minutes}
+          seconds={seconds}
+          onTaskAdded={this.addTask}
+          onMinChange={this.onMinChange}
+          onSecChange={this.onSecChange}
+        />
         <section className="main">
           <TaskList
             tasks={todoDataForRender}

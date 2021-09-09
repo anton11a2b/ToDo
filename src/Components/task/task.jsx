@@ -1,37 +1,17 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { formatDistanceToNow } from 'date-fns';
+import DistanceToNow from '../distanceToNow/distanceToNow';
+import Timer from '../timer/timer';
 import './task.css';
 
 export default class Task extends Component {
   constructor(props) {
     super(props);
 
-    const { date, label } = this.props;
+    const { label } = this.props;
     this.state = {
-      time: formatDistanceToNow(date, {
-        addSuffix: true,
-        includeSeconds: true,
-      }),
       label,
     };
-  }
-
-  componentDidMount() {
-    this.timer = setInterval(() => {
-      const { date } = this.props;
-
-      this.setState({
-        time: formatDistanceToNow(date, {
-          addSuffix: true,
-          includeSeconds: true,
-        }),
-      });
-    }, 1000);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timer);
   }
 
   onLabelChange = (event) => {
@@ -48,8 +28,8 @@ export default class Task extends Component {
   };
 
   render() {
-    const { done, hidden, modified, onDeleted, onToggleDone, onToggleModified } = this.props;
-    const { time, label } = this.state;
+    const { done, hidden, modified, onDeleted, onToggleDone, onToggleModified, min, sec, date } = this.props;
+    const { label } = this.state;
 
     let className = '';
 
@@ -70,8 +50,9 @@ export default class Task extends Component {
         <div className="view">
           <input className="toggle" type="checkbox" checked={done} onChange={onToggleDone} />
           <label>
-            <span className="description">{label}</span>
-            <span className="created">{time}</span>
+            <span className="title">{label}</span>
+            <Timer min={min} sec={sec} />
+            <DistanceToNow date={date} />
           </label>
           <button type="button" onClick={onToggleModified} className="icon icon-edit" />
           <button type="button" onClick={onDeleted} className="icon icon-destroy" />
@@ -87,6 +68,8 @@ export default class Task extends Component {
 }
 
 Task.defaultProps = {
+  min: '',
+  sec: '',
   label: '',
   done: false,
   hidden: false,
@@ -98,10 +81,12 @@ Task.defaultProps = {
 };
 
 Task.propTypes = {
+  min: PropTypes.string,
+  sec: PropTypes.string,
+  label: PropTypes.string,
   done: PropTypes.bool,
   hidden: PropTypes.bool,
   modified: PropTypes.bool,
-  label: PropTypes.string,
   onDeleted: PropTypes.func,
   onToggleDone: PropTypes.func,
   onToggleModified: PropTypes.func,

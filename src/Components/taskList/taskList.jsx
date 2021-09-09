@@ -5,9 +5,11 @@ import './taskList.css';
 
 const TaskList = ({ tasks, onDeleted, onToggleDone, onToggleModified }) => (
   <ul className="todo-list">
-    {tasks.map(({ label, done, hidden, modified, id, date }) => (
+    {tasks.map(({ label, done, hidden, modified, id, date, min, sec }) => (
       <Task
         key={id}
+        min={min}
+        sec={sec}
         date={date}
         done={done}
         label={label}

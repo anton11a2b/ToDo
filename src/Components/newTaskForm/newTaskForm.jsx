@@ -17,27 +17,46 @@ export default class NewTaskForm extends Component {
     const { onTaskAdded } = this.props;
     const { label } = this.state;
 
-    event.preventDefault();
-    onTaskAdded(label);
-    this.setState({
-      label: '',
-    });
+    if (event.keyCode === 13) {
+      onTaskAdded(label);
+      this.setState({
+        label: '',
+      });
+    }
   };
 
   render() {
     const { label } = this.state;
+    const { onSecChange, onMinChange, minutes, seconds } = this.props;
 
     return (
       <header className="header">
         <h1>todos</h1>
-        <form onSubmit={this.onSubmit}>
+        <form className="new-todo-form">
           <input
             autoFocus
             type="text"
             className="new-todo"
             value={label}
+            onKeyDown={this.onSubmit}
             onChange={this.onLabelChange}
             placeholder="What needs to be done?"
+          />
+          <input
+            type="number"
+            className="new-todo-form__timer"
+            placeholder="Min"
+            value={minutes}
+            onKeyDown={this.onSubmit}
+            onChange={onMinChange}
+          />
+          <input
+            type="number"
+            className="new-todo-form__timer"
+            placeholder="Sec"
+            value={seconds}
+            onKeyDown={this.onSubmit}
+            onChange={onSecChange}
           />
         </form>
       </header>
@@ -46,9 +65,17 @@ export default class NewTaskForm extends Component {
 }
 
 NewTaskForm.defaultProps = {
+  minutes: '',
+  seconds: '',
   onTaskAdded: () => {},
+  onSecChange: () => {},
+  onMinChange: () => {},
 };
 
 NewTaskForm.propTypes = {
+  minutes: PropTypes.string,
+  seconds: PropTypes.string,
   onTaskAdded: PropTypes.func,
+  onSecChange: PropTypes.func,
+  onMinChange: PropTypes.func,
 };
